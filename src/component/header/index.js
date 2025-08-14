@@ -1,6 +1,6 @@
 import React, { useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import logo from "../../assets/images/logo.png";
+import logo from "../../pages/logo_transparent.png";
 import Button from '@mui/material/Button';
 import { MdMenuOpen } from "react-icons/md";
 import { MdOutlineMenu } from "react-icons/md";
@@ -50,7 +50,7 @@ const Header = ({ onToggleSidebar }) => {
           {/* logo wrapper*/}
           <div className="col-2 part1">
             <Link to={"/"} className="d-flex align-items-center logo">
-              <img src={logo} alt="logo" />
+              <img src={logo} alt="logo" style={{ background: 'transparent' }} />
               <span className="ml-2">DebugMate </span>
             </Link>
           </div>
@@ -120,7 +120,10 @@ const Header = ({ onToggleSidebar }) => {
                       </ListItemIcon>
                       Add another account
                     </MenuItem>
-                    <MenuItem onClick={handleClose}>
+                    <MenuItem onClick={() => {
+                      handleClose();
+                      navigate('/setting');
+                    }}>
                       <ListItemIcon>
                         <Settings fontSize="small" />
                       </ListItemIcon>
