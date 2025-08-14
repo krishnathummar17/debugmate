@@ -240,12 +240,7 @@ body.dark .prompt-suggestions-container .suggestions-grid .suggestion-card .card
 }
 
 
-/* .communication-bg.show-bg-image {
-  background-image: url(../../assets/images/logo.png);
-  background-repeat: no-repeat;
-  background-position: center;
-  background-size: 200px 200px;
-}  */
+
 .chatbot-layout {
   display: flex;
   flex-direction: row;
