@@ -1,246 +1,582 @@
-import React, { useState, useEffect } from 'react';
-import { Container, Row, Col, Button, Table, Form, Badge, Card, Alert } from 'react-bootstrap';
-import { FaEdit, FaTrash, FaEye, FaEyeSlash } from 'react-icons/fa';
-import './createmail.css';
-import { databaseService } from '../../services/supabase';
+import React, { useContext, useState, useEffect } from "react";
+import { MyContext } from "../../App";
+import { FaUser, FaCog, FaBell, FaShieldAlt, FaPalette, FaSignOutAlt, FaCode } from "react-icons/fa";
+import { MdOutlineMenu } from "react-icons/md";
+import "./setting.css";
 
-const roleColors = {
-  Admin: 'primary',
-  Hr: 'warning',
-  Employee: 'success',
-  Sales: 'danger',
-};
+const Setting = () => {
+    const context = useContext(MyContext);
+    const [activeSection, setActiveSection] = useState('profile');
+    const [selectedColorTheme, setSelectedColorTheme] = useState('purple');
+    const [selectedChatbotTheme, setSelectedChatbotTheme] = useState('default');
+    const [selectedAccentColor, setSelectedAccentColor] = useState('purple');
 
-const CreateMail = () => {
-  const [employees, setEmployees] = useState([]);
-  const [newEmployee, setNewEmployee] = useState({ name: '', email: '', password: '', role: 'Admin' });
-  const [isAdding, setIsAdding] = useState(false);
-  const [search, setSearch] = useState('');
-  const [message, setMessage] = useState(null);
-  const [messageType, setMessageType] = useState('success');
-  const [editEmployeeId, setEditEmployeeId] = useState(null);
-  const [editEmployee, setEditEmployee] = useState({ name: '', email: '', password: '', role: 'Admin' });
-  const [showPassword, setShowPassword] = useState(false);
-  const [showEditPassword, setShowEditPassword] = useState({});
-
-  // Fetch employees from Supabase on mount
-  useEffect(() => {
-    const fetchEmployees = async () => {
-      const { data, error } = await databaseService.getAllUserLogins();
-      if (!error) setEmployees(data);
+    const handleProfileClick = () => {
+        // Toggle the sidebar when profile is clicked
+        if (context.setIstoggleSidebar) {
+            context.setIstoggleSidebar(!context.istoggleSidebar);
+        }
+        setActiveSection('profile');
     };
-    fetchEmployees();
-  }, []);
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setNewEmployee({ ...newEmployee, [name]: value });
-  };
+    const handleColorThemeChange = (theme) => {
+        setSelectedColorTheme(theme);
+        // Apply color theme to the application
+        document.documentElement.setAttribute('data-color-theme', theme);
+        localStorage.setItem('colorTheme', theme);
+    };
 
-  const handleAddEmployee = async (e) => {
-    e.preventDefault();
-    try {
-      await databaseService.createUserLogin({
-        email: newEmployee.email,
-        password: newEmployee.password,
-        role: newEmployee.role,
-        name: newEmployee.name
-      });
-      const { data } = await databaseService.getAllUserLogins();
-      setEmployees(data);
-      setNewEmployee({ name: '', email: '', password: '', role: 'Admin' });
-      setIsAdding(false);
-      setMessageType('success');
-      setMessage('User added successfully!');
-    } catch (error) {
-      setMessageType('danger');
-      setMessage('Failed to add user.');
-    }
-    setTimeout(() => setMessage(null), 3000);
-  };
+    const handleChatbotThemeChange = (theme) => {
+        setSelectedChatbotTheme(theme);
+        // Apply chatbot theme
+        document.documentElement.setAttribute('data-chatbot-theme', theme);
+        localStorage.setItem('chatbotTheme', theme);
+    };
 
-  const handleDeleteEmployee = async (id, email) => {
-    try {
-      await databaseService.deleteUserLoginByEmail(email);
-      const { data } = await databaseService.getAllUserLogins();
-      setEmployees(data);
-      setMessageType('success');
-      setMessage('User deleted successfully!');
-    } catch (error) {
-      setMessageType('danger');
-      setMessage('Failed to delete user.');
-    }
-    setTimeout(() => setMessage(null), 3000);
-  };
+    const handleAccentColorChange = (color) => {
+        setSelectedAccentColor(color);
+        // Apply accent color
+        document.documentElement.setAttribute('data-accent-color', color);
+        localStorage.setItem('accentColor', color);
+    };
 
-  const handleEditClick = (emp) => {
-    setEditEmployeeId(emp.id);
-    setEditEmployee({ ...emp });
-  };
+    // Load saved themes on component mount
+    useEffect(() => {
+        const savedColorTheme = localStorage.getItem('colorTheme') || 'purple';
+        const savedChatbotTheme = localStorage.getItem('chatbotTheme') || 'default';
+        const savedAccentColor = localStorage.getItem('accentColor') || 'purple';
 
-  const handleEditInputChange = (e) => {
-    const { name, value } = e.target;
-    setEditEmployee({ ...editEmployee, [name]: value });
-  };
+        setSelectedColorTheme(savedColorTheme);
+        setSelectedChatbotTheme(savedChatbotTheme);
+        setSelectedAccentColor(savedAccentColor);
 
-  const handleEditSave = async () => {
-    try {
-      await databaseService.updateUserLoginByEmail(editEmployee.email, {
-        name: editEmployee.name,
-        password: editEmployee.password,
-        role: editEmployee.role
-      });
-      const { data } = await databaseService.getAllUserLogins();
-      setEmployees(data);
-      setMessageType('success');
-      setMessage('User updated successfully!');
-      setEditEmployeeId(null);
-    } catch (error) {
-      setMessageType('danger');
-      setMessage('Failed to update user.');
-    }
-    setTimeout(() => setMessage(null), 3000);
-  };
+        // Apply saved themes
+        document.documentElement.setAttribute('data-color-theme', savedColorTheme);
+        document.documentElement.setAttribute('data-chatbot-theme', savedChatbotTheme);
+        document.documentElement.setAttribute('data-accent-color', savedAccentColor);
+    }, []);
 
-  const handleEditCancel = () => {
-    setEditEmployeeId(null);
-  };
+    const settingsSections = [
+        {
+            id: 'profile',
+            title: 'Profile Settings',
+            icon: <FaUser />,
+            description: 'Manage your profile information and preferences'
+        },
+        {
+            id: 'general',
+            title: 'General Settings',
+            icon: <FaCog />,
+            description: 'Configure general application settings'
+        },
+        {
+            id: 'notifications',
+            title: 'Notifications',
+            icon: <FaBell />,
+            description: 'Manage notification preferences'
+        },
+        {
+            id: 'security',
+            title: 'Security',
+            icon: <FaShieldAlt />,
+            description: 'Security and privacy settings'
+        },
+        {
+            id: 'appearance',
+            title: 'Appearance',
+            icon: <FaPalette />,
+            description: 'Customize the look and feel'
+        },
+        {
+            id: 'api-management',
+            title: 'API Management',
+            icon: <FaCode />,
+            description: 'Manage API keys and endpoints'
+        }
+    ];
 
-  const filteredEmployees = employees.filter(emp =>
-    emp.name.toLowerCase().includes(search.toLowerCase()) ||
-    emp.email.toLowerCase().includes(search.toLowerCase()) ||
-    emp.role.toLowerCase().includes(search.toLowerCase())
-  );
-
-  return (
-    <Container fluid className="d-flex justify-content-center align-items-center min-vh-99 createmail-bg">
-      <div style={{ position: 'absolute', top: 20, left: 0, right: 0, zIndex: 9999 }}>
-        {message && <Alert variant={messageType} className="text-center">{message}</Alert>}
-      </div>
-      <Card className="w-100 shadow createmail-card">
-        <Card.Body className='wrapper'>
-          <Row className="align-items-center mb-4">
-            <Col xs={12} md={6} className="mb-3 mb-md-0">
-              <h2 className="fw-bold mb-0">Employee List</h2>
-            </Col>
-            <Col xs={6} md={3} className="text-md-end mb-3 mb-md-0">
-              <Button
-                variant="primary"
-                className="rounded-pill px-4 py-2 fw-bold"
-                onClick={() => setIsAdding(!isAdding)}
-                style={{ background: '#8ca8f4', border: 'none' }}
-              >
-                {isAdding ? 'Cancel' : '+ New Employee'}
-              </Button>
-            </Col>
-            <Col xs={6} md={3} className="text-md-end">
-              <Form.Control
-                type="text"
-                placeholder="Search"
-                value={search}
-                onChange={e => setSearch(e.target.value)}
-                className="createmail-search"
-              />
-            </Col>
-          </Row>
-          {isAdding && (
-            <Form onSubmit={handleAddEmployee} className="mb-4 p-3 rounded createmail-add-form">
-              <Row className="g-2">
-                <Col md={3} xs={12}><Form.Control type="text" name="name" value={newEmployee.name} onChange={handleInputChange} placeholder="Name" required /></Col>
-                <Col md={3} xs={12}><Form.Control type="email" name="email" value={newEmployee.email} onChange={handleInputChange} placeholder="Email" required /></Col>
-                <Col md={3} xs={12} style={{ position: 'relative' }}>
-                  <Form.Control type={showPassword ? "text" : "password"} name="password" value={newEmployee.password} onChange={handleInputChange} placeholder="Password" required />
-                  
-                </Col>
-                <Col md={2} xs={12}>
-                  <Form.Select name="role" value={newEmployee.role} onChange={handleInputChange}>
-                    <option value="Admin">Admin</option>
-                    <option value="Hr">Hr</option>
-                    <option value="Employee">Employee</option>
-                    <option value="Sales">Sales</option>
-                  </Form.Select>
-                </Col>
-                <Col md={1} xs={12} className="d-grid">
-                  <Button type="submit" variant="success" className="fw-bold">Add</Button>
-                </Col>
-              </Row>
-            </Form>
-          )}
-          <div className="table-responsive">
-            <Table
-              hover
-              striped
-              className="align-middle createmail-table modern-table"
-            >
-              <thead>
-                <tr>
-                  <th className="fw-bold">N0.</th>
-                  <th className="fw-bold">NAME</th>
-                  <th className="fw-bold">EMAIL-ID</th>
-                  <th className="fw-bold">PASSWORD</th>
-                  <th className="fw-bold">ROLE</th>
-                  <th className="fw-bold">EDIT</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredEmployees.map((emp, idx) => (
-                  <tr key={emp.id}>
-                    <td>{idx + 1}</td>
-                    <td>{editEmployeeId === emp.id ? (
-                      <Form.Control type="text" name="name" value={editEmployee.name} onChange={handleEditInputChange} />
-                    ) : emp.name}</td>
-                    <td>{editEmployeeId === emp.id ? (
-                      <Form.Control type="email" name="email" value={editEmployee.email} onChange={handleEditInputChange} disabled />
-                    ) : emp.email}</td>
-                    <td>{editEmployeeId === emp.id ? (
-                      <div style={{ position: 'relative' }}>
-                        <Form.Control
-                          type={showEditPassword[emp.id] ? 'text' : 'password'}
-                          name="password"
-                          value={editEmployee.password}
-                          onChange={handleEditInputChange}
+    const renderProfileSection = () => (
+        <div className="profile-section">
+            <div className="profile-header">
+                <h2>Profile Information</h2>
+                <p>Manage your account details and preferences</p>
+            </div>
+            
+            <div className="profile-content">
+                <div className="profile-avatar">
+                    <div className="avatar-placeholder">
+                        <FaUser />
+                    </div>
+                    <button className="change-avatar-btn">Change Avatar</button>
+                </div>
+                
+                <div className="profile-form">
+                    <div className="form-group">
+                        <label>Full Name</label>
+                        <input 
+                            type="text" 
+                            placeholder="Enter your full name"
+                            defaultValue={context.username || ''}
                         />
-                        <span
-                          style={{ position: 'absolute', right: 10, top: '50%', transform: 'translateY(-50%)', cursor: 'pointer', zIndex: 2 }}
-                          onClick={() => setShowEditPassword(prev => ({ ...prev, [emp.id]: !prev[emp.id] }))}
+                    </div>
+                    
+                    <div className="form-group">
+                        <label>Email Address</label>
+                        <input 
+                            type="email" 
+                            placeholder="Enter your email"
+                            defaultValue={context.userEmail || ''}
+                            readOnly
+                        />
+                    </div>
+                    
+                    <div className="form-group">
+                        <label>Role</label>
+                        <input 
+                            type="text" 
+                            placeholder="Your role in the organization"
+                            defaultValue="Developer"
+                        />
+                    </div>
+                    
+                    <div className="form-group">
+                        <label>Bio</label>
+                        <textarea 
+                            placeholder="Tell us about yourself..."
+                            rows="4"
+                        ></textarea>
+                    </div>
+                    
+                    <div className="form-actions">
+                        <button className="save-btn">Save Changes</button>
+                        <button className="cancel-btn">Cancel</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+
+    const renderGeneralSection = () => (
+        <div className="general-section">
+            <h2>General Settings</h2>
+            <div className="settings-group">
+                <div className="setting-item">
+                    <div className="setting-info">
+                        <h3>Language</h3>
+                        <p>Choose your preferred language</p>
+                    </div>
+                    <select className="setting-control">
+                        <option>English</option>
+                        <option>Spanish</option>
+                        <option>French</option>
+                    </select>
+                </div>
+                
+                <div className="setting-item">
+                    <div className="setting-info">
+                        <h3>Time Zone</h3>
+                        <p>Set your local time zone</p>
+                    </div>
+                    <select className="setting-control">
+                        <option>UTC (00:00)</option>
+                        <option>EST (-05:00)</option>
+                        <option>PST (-08:00)</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    );
+
+    const renderNotificationsSection = () => (
+        <div className="notifications-section">
+            <h2>Notification Preferences</h2>
+            <div className="settings-group">
+                <div className="setting-item">
+                    <div className="setting-info">
+                        <h3>Email Notifications</h3>
+                        <p>Receive notifications via email</p>
+                    </div>
+                    <label className="toggle-switch">
+                        <input type="checkbox" defaultChecked />
+                        <span className="slider"></span>
+                    </label>
+                </div>
+                
+                <div className="setting-item">
+                    <div className="setting-info">
+                        <h3>Push Notifications</h3>
+                        <p>Receive push notifications</p>
+                    </div>
+                    <label className="toggle-switch">
+                        <input type="checkbox" />
+                        <span className="slider"></span>
+                    </label>
+                </div>
+            </div>
+        </div>
+    );
+
+    const renderSecuritySection = () => (
+        <div className="security-section">
+            <h2>Security Settings</h2>
+            <div className="settings-group">
+                <div className="setting-item">
+                    <div className="setting-info">
+                        <h3>Two-Factor Authentication</h3>
+                        <p>Add an extra layer of security</p>
+                    </div>
+                    <button className="enable-btn">Enable</button>
+                </div>
+                
+                <div className="setting-item">
+                    <div className="setting-info">
+                        <h3>Change Password</h3>
+                        <p>Update your account password</p>
+                    </div>
+                    <button className="change-btn">Change</button>
+                </div>
+            </div>
+        </div>
+    );
+
+    const renderAppearanceSection = () => (
+        <div className="appearance-section">
+            <h2>Appearance Settings</h2>
+            <div className="settings-group">
+                <div className="setting-item">
+                    <div className="setting-info">
+                        <h3>Theme Mode</h3>
+                        <p>Choose your preferred theme mode</p>
+                    </div>
+                    <div className="theme-options">
+                        <button 
+                            className={`theme-btn ${context.istheme ? 'active' : ''}`}
+                            onClick={() => context.setIstheme(true)}
                         >
-                          {showEditPassword[emp.id] ? <FaEyeSlash /> : <FaEye />}
-                        </span>
-                      </div>
-                    ) : ('*'.repeat(emp.password.length))}</td>
-                    <td>{editEmployeeId === emp.id ? (
-                      <Form.Select name="role" value={editEmployee.role} onChange={handleEditInputChange}>
-                        <option value="Admin">Admin</option>
-                        <option value="Hr">Hr</option>
-                        <option value="Employee">Employee</option>
-                        <option value="Sales">Sales</option>
-                      </Form.Select>
-                    ) : (
-                      <Badge bg={roleColors[emp.role] || 'secondary'} className="px-3 py-2 rounded-pill text-capitalize">{emp.role}</Badge>
-                    )}</td>
-                    <td>
-                      {editEmployeeId === emp.id ? (
-                        <>
-                          <Button variant="success" size="sm" className="me-2" onClick={handleEditSave}>Save</Button>
-                          <Button variant="secondary" size="sm" onClick={handleEditCancel}>Cancel</Button>
-                        </>
-                      ) : (
-                        <>
-                          <Button variant="link" className="p-0 me-2 text-primary" onClick={() => handleEditClick(emp)}><FaEdit /></Button>
-                          <Button variant="link" className="p-0 text-danger" onClick={() => handleDeleteEmployee(emp.id, emp.email)}><FaTrash /></Button>
-                        </>
-                      )}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </Table>
-          </div>
-        </Card.Body>
-      </Card>
-    </Container>
-  );
+                            Light
+                        </button>
+                        <button 
+                            className={`theme-btn ${!context.istheme ? 'active' : ''}`}
+                            onClick={() => context.setIstheme(false)}
+                        >
+                            Dark
+                        </button>
+                    </div>
+                </div>
+                
+                <div className="setting-item">
+                    <div className="setting-info">
+                        <h3>Primary Color Theme</h3>
+                        <p>Choose your preferred color scheme</p>
+                    </div>
+                    <div className="color-theme-options">
+                        <button 
+                            className={`color-btn purple-theme ${selectedColorTheme === 'purple' ? 'active' : ''}`}
+                            onClick={() => handleColorThemeChange('purple')}
+                        >
+                            <span className="color-preview purple"></span>
+                            <span className="color-name">Purple</span>
+                        </button>
+                        <button 
+                            className={`color-btn blue-theme ${selectedColorTheme === 'blue' ? 'active' : ''}`}
+                            onClick={() => handleColorThemeChange('blue')}
+                        >
+                            <span className="color-preview blue"></span>
+                            <span className="color-name">Blue</span>
+                        </button>
+                        <button 
+                            className={`color-btn green-theme ${selectedColorTheme === 'green' ? 'active' : ''}`}
+                            onClick={() => handleColorThemeChange('green')}
+                        >
+                            <span className="color-preview green"></span>
+                            <span className="color-name">Green</span>
+                        </button>
+                        <button 
+                            className={`color-btn orange-theme ${selectedColorTheme === 'orange' ? 'active' : ''}`}
+                            onClick={() => handleColorThemeChange('orange')}
+                        >
+                            <span className="color-preview orange"></span>
+                            <span className="color-name">Orange</span>
+                        </button>
+                        <button 
+                            className={`color-btn pink-theme ${selectedColorTheme === 'pink' ? 'active' : ''}`}
+                            onClick={() => handleColorThemeChange('pink')}
+                        >
+                            <span className="color-preview pink"></span>
+                            <span className="color-name">Pink</span>
+                        </button>
+                        <button 
+                            className={`color-btn teal-theme ${selectedColorTheme === 'teal' ? 'active' : ''}`}
+                            onClick={() => handleColorThemeChange('teal')}
+                        >
+                            <span className="color-preview teal"></span>
+                            <span className="color-name">Teal</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <div className="setting-item">
+                    <div className="setting-info">
+                        <h3>Chatbot Color Theme</h3>
+                        <p>Customize chatbot interface colors</p>
+                    </div>
+                    <div className="chatbot-color-options">
+                        <button 
+                            className={`chatbot-color-btn default-theme ${selectedChatbotTheme === 'default' ? 'active' : ''}`}
+                            onClick={() => handleChatbotThemeChange('default')}
+                        >
+                            <span className="chatbot-preview default"></span>
+                            <span className="theme-name">Default</span>
+                        </button>
+                        <button 
+                            className={`chatbot-color-btn modern-theme ${selectedChatbotTheme === 'modern' ? 'active' : ''}`}
+                            onClick={() => handleChatbotThemeChange('modern')}
+                        >
+                            <span className="chatbot-preview modern"></span>
+                            <span className="theme-name">Modern</span>
+                        </button>
+                        <button 
+                            className={`chatbot-color-btn warm-theme ${selectedChatbotTheme === 'warm' ? 'active' : ''}`}
+                            onClick={() => handleChatbotThemeChange('warm')}
+                        >
+                            <span className="chatbot-preview warm"></span>
+                            <span className="theme-name">Warm</span>
+                        </button>
+                        <button 
+                            className={`chatbot-color-btn cool-theme ${selectedChatbotTheme === 'cool' ? 'active' : ''}`}
+                            onClick={() => handleChatbotThemeChange('cool')}
+                        >
+                            <span className="chatbot-preview cool"></span>
+                            <span className="theme-name">Cool</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <div className="setting-item">
+                    <div className="setting-info">
+                        <h3>Accent Color</h3>
+                        <p>Choose accent color for highlights and buttons</p>
+                    </div>
+                    <div className="accent-color-options">
+                        <button 
+                            className={`accent-btn accent-purple ${selectedAccentColor === 'purple' ? 'active' : ''}`}
+                            onClick={() => handleAccentColorChange('purple')}
+                        >
+                            <span className="accent-preview purple"></span>
+                            <span className="accent-name">Purple</span>
+                        </button>
+                        <button 
+                            className={`accent-btn accent-blue ${selectedAccentColor === 'blue' ? 'active' : ''}`}
+                            onClick={() => handleAccentColorChange('blue')}
+                        >
+                            <span className="accent-preview blue"></span>
+                            <span className="accent-name">Blue</span>
+                        </button>
+                        <button 
+                            className={`accent-btn accent-green ${selectedAccentColor === 'green' ? 'active' : ''}`}
+                            onClick={() => handleAccentColorChange('green')}
+                        >
+                            <span className="accent-preview green"></span>
+                            <span className="accent-name">Green</span>
+                        </button>
+                        <button 
+                            className={`accent-btn accent-orange ${selectedAccentColor === 'orange' ? 'active' : ''}`}
+                            onClick={() => handleAccentColorChange('orange')}
+                        >
+                            <span className="accent-preview orange"></span>
+                            <span className="accent-name">Orange</span>
+                        </button>
+                        <button 
+                            className={`accent-btn accent-pink ${selectedAccentColor === 'pink' ? 'active' : ''}`}
+                            onClick={() => handleAccentColorChange('pink')}
+                        >
+                            <span className="accent-preview pink"></span>
+                            <span className="accent-name">Pink</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+
+    const renderApiManagementSection = () => (
+        <div className="api-management-section">
+            <h2>Chatbot API Management</h2>
+            <p className="section-description">Manage your chatbot API keys, models, and conversation settings</p>
+            
+            <div className="settings-group">
+                <div className="setting-item">
+                    <div className="setting-info">
+                        <h3>Chatbot API Keys</h3>
+                        <p>Manage API keys for chatbot services (OpenAI, Claude, etc.)</p>
+                    </div>
+                    <button className="manage-btn">Manage Keys</button>
+                </div>
+                
+                <div className="setting-item">
+                    <div className="setting-info">
+                        <h3>AI Model Selection</h3>
+                        <p>Choose your preferred AI model for chatbot responses</p>
+                    </div>
+                    <select className="setting-control">
+                        <option>GPT-4</option>
+                        <option>GPT-3.5 Turbo</option>
+                        <option>Claude-3</option>
+                        <option>Claude-2</option>
+                        <option>Custom Model</option>
+                    </select>
+                </div>
+                
+                <div className="setting-item">
+                    <div className="setting-info">
+                        <h3>Conversation Memory</h3>
+                        <p>Enable conversation history and context retention</p>
+                    </div>
+                    <label className="toggle-switch">
+                        <input type="checkbox" defaultChecked />
+                        <span className="slider"></span>
+                    </label>
+                </div>
+                
+                <div className="setting-item">
+                    <div className="setting-info">
+                        <h3>Response Length</h3>
+                        <p>Set maximum response length for chatbot</p>
+                    </div>
+                    <select className="setting-control">
+                        <option>Short (100-200 words)</option>
+                        <option>Medium (200-500 words)</option>
+                        <option>Long (500+ words)</option>
+                        <option>Custom</option>
+                    </select>
+                </div>
+                
+                <div className="setting-item">
+                    <div className="setting-info">
+                        <h3>Temperature Settings</h3>
+                        <p>Control creativity vs consistency in responses</p>
+                    </div>
+                    <select className="setting-control">
+                        <option>Conservative (0.1)</option>
+                        <option>Balanced (0.5)</option>
+                        <option>Creative (0.9)</option>
+                        <option>Custom</option>
+                    </select>
+                </div>
+                
+                <div className="setting-item">
+                    <div className="setting-info">
+                        <h3>Chatbot Personality</h3>
+                        <p>Configure chatbot's tone and personality</p>
+                    </div>
+                    <button className="configure-btn">Configure</button>
+                </div>
+                
+                <div className="setting-item">
+                    <div className="setting-info">
+                        <h3>Rate Limiting</h3>
+                        <p>Set API rate limits for chatbot requests</p>
+                    </div>
+                    <label className="toggle-switch">
+                        <input type="checkbox" defaultChecked />
+                        <span className="slider"></span>
+                    </label>
+                </div>
+                
+                <div className="setting-item">
+                    <div className="setting-info">
+                        <h3>Webhook Integration</h3>
+                        <p>Setup webhooks for chatbot events and notifications</p>
+                    </div>
+                    <button className="setup-btn">Setup Webhooks</button>
+                </div>
+                
+                <div className="setting-item">
+                    <div className="setting-info">
+                        <h3>Chatbot Analytics</h3>
+                        <p>View conversation analytics and performance metrics</p>
+                    </div>
+                    <button className="analytics-btn">View Analytics</button>
+                </div>
+                
+                <div className="setting-item">
+                    <div className="setting-info">
+                        <h3>API Documentation</h3>
+                        <p>Access chatbot API documentation and integration guides</p>
+                    </div>
+                    <button className="docs-btn">View Docs</button>
+                </div>
+            </div>
+        </div>
+    );
+
+    const renderContent = () => {
+        switch(activeSection) {
+            case 'profile':
+                return renderProfileSection();
+            case 'general':
+                return renderGeneralSection();
+            case 'notifications':
+                return renderNotificationsSection();
+            case 'security':
+                return renderSecuritySection();
+            case 'appearance':
+                return renderAppearanceSection();
+            case 'api-management':
+                return renderApiManagementSection();
+            default:
+                return renderProfileSection();
+        }
+    };
+
+    return (
+        <div className="settings-container">
+            <div className="settings-header">
+                <h1>Settings</h1>
+                <p>Manage your account settings and preferences</p>
+            </div>
+            
+            <div className="settings-layout">
+                <div className="settings-sidebar">
+                    <div className="sidebar-header">
+                        <button 
+                            className="menu-toggle"
+                            onClick={() => context.setIstoggleSidebar(!context.istoggleSidebar)}
+                        >
+                            <MdOutlineMenu />
+                        </button>
+                        <span>Settings Menu</span>
+                    </div>
+                    
+                    <div className="sidebar-menu">
+                        {settingsSections.map((section) => (
+                            <button
+                                key={section.id}
+                                className={`menu-item ${activeSection === section.id ? 'active' : ''}`}
+                                onClick={() => {
+                                    if (section.id === 'profile') {
+                                        handleProfileClick();
+                                    } else {
+                                        setActiveSection(section.id);
+                                    }
+                                }}
+                            >
+                                <span className="menu-icon">{section.icon}</span>
+                                <div className="menu-content">
+                                    <span className="menu-title">{section.title}</span>
+                                    <span className="menu-description">{section.description}</span>
+                                </div>
+                            </button>
+                        ))}
+                    </div>
+                </div>
+                
+                <div className="settings-content">
+                    {renderContent()}
+                </div>
+            </div>
+        </div>
+    );
 };
 
-export default CreateMail;
-
+export default Setting;
