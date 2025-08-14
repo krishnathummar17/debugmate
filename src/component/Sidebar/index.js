@@ -101,23 +101,10 @@ const Sidebar = () => {
                     </Button>
                     </Link>
                 </li>
-                <li>
-                    <Link to="/Api-management">
-                    <Button className={`w-100 ${activeTab === 5 && isToggle===true ? 'active' : ' '}`} onClick={() => isOpenSubmenu(5)}>
-                        <span className='icon'>
-                            <TfiAndroid />
-                        </span>
-                        <span className='text'>API Management</span>
-                        <span className='arrow'>
-                            <IoIosArrowForward />
-                        </span>
 
-                    </Button>
-                    </Link>
-                </li>
                 <li>
                     <Link to="/Overview">
-                    <Button className={`w-100 ${activeTab === 6 && isToggle===true ? 'active' : ' '}`} onClick={() => isOpenSubmenu(6)}>
+                    <Button className={`w-100 ${activeTab === 5 && isToggle===true ? 'active' : ' '}`} onClick={() => isOpenSubmenu(5)}>
                         <span className='icon'>
                             <VscActivateBreakpoints />
                         </span>
@@ -130,7 +117,7 @@ const Sidebar = () => {
                 </li>
                 <li>
                     <Link to="/Setting">
-                    <Button className={`w-100 ${activeTab === 7 && isToggle===true ? 'active' : ' '}`} onClick={() => isOpenSubmenu(7)}>
+                    <Button className={`w-100 ${activeTab === 6 && isToggle===true ? 'active' : ' '}`} onClick={() => isOpenSubmenu(6)}>
                         <span className='icon'>
                             <IoMdSettings />
                         </span>
