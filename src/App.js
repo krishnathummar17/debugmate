@@ -105,6 +105,5 @@ function App() {
     </BrowserRouter>
   );
 }
-
 export default App;
 export { MyContext };
