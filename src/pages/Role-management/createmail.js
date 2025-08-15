@@ -2,7 +2,7 @@ import React, { useContext, useState, useEffect } from "react";
 import { MyContext } from "../../App";
 import { FaUser, FaCog, FaBell, FaShieldAlt, FaPalette, FaSignOutAlt, FaCode } from "react-icons/fa";
 import { MdOutlineMenu } from "react-icons/md";
-import "./setting.css";
+import "./createmail.css";
 
 const Setting = () => {
     const context = useContext(MyContext);
