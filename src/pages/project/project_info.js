@@ -3,7 +3,7 @@ import "./project_info.css";
 import { Container, Form, Button, Row, Col } from "react-bootstrap";
 import projectDatabaseSupabase from '../../services/projectDatabaseSupabase';
 import SuccessNotification from './SuccessNotification';
-// import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const roleOptions = [
     { label: "Web Development", value: "web" },
@@ -52,6 +52,7 @@ const teamMembersList = [
 ];
 
 const EmployeeProjectForm = () => {
+    const navigate = useNavigate();
     const [form, setForm] = useState({
         projectName: "",
         projectDescription: "",
@@ -165,16 +166,60 @@ const EmployeeProjectForm = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
+            console.log('Submitting project form:', {
+                ...form,
+                customQuestions: customQuestionsList,
+                customAnswers: customAnswers
+            });
+            
             // Save form data to Supabase database
             const result = await projectDatabaseSupabase.saveProject({
                 ...form,
                 customQuestions: customQuestionsList,
                 customAnswers: customAnswers
             });
+            
+            console.log('Save project result:', result);
+            
             if (result.success) {
                 setShowSuccess(true);
-                // Optionally, reset the form here
+                console.log('Project saved successfully, redirecting to dashboard...');
+                
+                // Reset form after successful submission
+                setForm({
+                    projectName: "",
+                    projectDescription: "",
+                    startDate: "",
+                    endDate: "",
+                    status: "",
+                    assignedRole: "",
+                    assignedTo: [],
+                    priority: "",
+                    clientName: "",
+                    uploadDocuments: null,
+                    projectScope: "",
+                    techStack: [],
+                    techStackCustom: "",
+                    leaderOfProject: "",
+                    projectResponsibility: "",
+                    role: [],
+                    roleAnswers: {},
+                    customQuestion: "",
+                    customAnswer: "",
+                });
+                setCustomTeamList([]);
+                setCustomRoleList([]);
+                setCustomTechList([]);
+                setCustomQuestionsList([]);
+                setCustomAnswers({});
+                
+                // Redirect to dashboard after 2 seconds with refresh flag
+                setTimeout(() => {
+                    console.log('Navigating to dashboard with refresh flag...');
+                    navigate('/dashboard', { state: { refreshProjects: true } });
+                }, 2000);
             } else {
+                console.error('Failed to save project:', result.message);
                 alert('Failed to save project: ' + result.message);
             }
         } catch (error) {
@@ -216,7 +261,7 @@ const EmployeeProjectForm = () => {
 
     return (
         <Container className="project-form-container d-flex align-items-center justify-content-center min-vh-99" style={{ flexDirection: 'column' }}>
-            <SuccessNotification show={showSuccess} message="Your form data has been successfully saved!" onClose={() => setShowSuccess(false)} />
+            <SuccessNotification show={showSuccess} message={`Project "${form.projectName}" has been successfully created! Redirecting to dashboard...`} onClose={() => setShowSuccess(false)} />
             <Form className="project-form-card p-4" onSubmit={handleSubmit}>
                 <h3 className="mb-4 text-center">Employee Project Form</h3>
                 {/* Default Questions */}
