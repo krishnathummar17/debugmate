@@ -17,6 +17,7 @@ import ApiManagement from './pages/Api_managment/Api_managment.js';
 import Overview from './pages/Overview/Overview.js';
 import Setting from './pages/Setting/setting.js';
 import ProjectDetailsTable from './pages/project/ProjectDetailsTable';
+import ProjectDetails from './pages/project/ProjectDetails';
 import DualChatbot from './pages/chatbot/DualChatbot.js';
 import DeveloperChat from './pages/chatbot/DeveloperChat';
 import DeveloperChatMobile from './pages/chatbot/DeveloperChatMobile';
@@ -80,6 +81,7 @@ function App() {
             <Route path="/" element={<Dashboard />} />
             <Route path="/home" element={<Dashboard />} />
             <Route path="/EmployeeProjectForm" element={<EmployeeProjectForm/>} />
+            <Route path="/project" element={<EmployeeProjectForm/>} />
             <Route path="/chatbot/communication" element={<Communication />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/role-management/chooserole" element={<ChooseRole />} />
@@ -92,6 +94,8 @@ function App() {
             <Route path="/setting" element={<Setting />} />
             <Route path="/signin" element={<SignIn />} />
             <Route path="/project/DetailsTable" element={<ProjectDetailsTable />} />
+            <Route path="/project/:id" element={<ProjectDetails />} />
+            <Route path="/chatbot" element={<DualChatbot />} />
             <Route path="/chatbot/DualChatbot" element={<DualChatbot />} />
             <Route path="/chatbot/web" element={<DeveloperChat />} />
             <Route path="/chatbot/mobile" element={<DeveloperChatMobile />} />
