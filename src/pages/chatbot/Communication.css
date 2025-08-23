@@ -514,3 +514,695 @@ body.dark .prompt-suggestions-container .suggestions-grid .suggestion-card .card
     -webkit-overflow-scrolling: touch;
   }
 }
+
+/* Chat History Card Body - matches the image exactly */
+.chat-history.card-body {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 1px solid #f0f0f0;
+  min-height: 400px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.chat-history.card-body::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, #f8fafc 0%, #ffffff 100%);
+  z-index: -1;
+}
+
+/* Main heading - "Start writing with GenAI" */
+.chat-history.card-body .genai-heading {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #1a202c;
+  margin-bottom: 3rem;
+  text-align: center;
+  letter-spacing: -0.5px;
+  line-height: 1.2;
+}
+
+/* Suggestion cards container */
+.chat-history.card-body .suggestions-container {
+  display: flex;
+  gap: 1.5rem;
+  justify-content: center;
+  align-items: stretch;
+  flex-wrap: wrap;
+  max-width: 800px;
+  width: 100%;
+}
+
+/* Individual suggestion cards */
+.chat-history.card-body .suggestion-card {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 1.5rem 1.2rem;
+  min-width: 200px;
+  max-width: 250px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  border: 1px solid #f1f5f9;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.chat-history.card-body .suggestion-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #8b5cf6, #a855f7);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.chat-history.card-body .suggestion-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+  border-color: #e2e8f0;
+}
+
+.chat-history.card-body .suggestion-card:hover::before {
+  opacity: 1;
+}
+
+/* Card icons - purple color */
+.chat-history.card-body .suggestion-card .card-icon {
+  font-size: 2.5rem;
+  color: #8b5cf6;
+  margin-bottom: 1rem;
+  transition: transform 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 60px;
+  height: 60px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #f3f4f6, #ffffff);
+  box-shadow: 0 2px 8px rgba(139, 92, 246, 0.1);
+}
+
+.chat-history.card-body .suggestion-card:hover .card-icon {
+  transform: scale(1.1);
+  background: linear-gradient(135deg, #faf5ff, #ffffff);
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.2);
+}
+
+/* Card text */
+.chat-history.card-body .suggestion-card .card-text {
+  font-size: 1rem;
+  font-weight: 500;
+  color: #374151;
+  line-height: 1.4;
+  margin: 0;
+  transition: color 0.3s ease;
+}
+
+.chat-history.card-body .suggestion-card:hover .card-text {
+  color: #1f2937;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .chat-history.card-body {
+    padding: 1.5rem;
+    min-height: 350px;
+  }
+  
+  .chat-history.card-body .genai-heading {
+    font-size: 1.75rem;
+    margin-bottom: 2rem;
+  }
+  
+  .chat-history.card-body .suggestions-container {
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+  }
+  
+  .chat-history.card-body .suggestion-card {
+    min-width: 280px;
+    max-width: 320px;
+    padding: 1.25rem 1rem;
+  }
+  
+  .chat-history.card-body .suggestion-card .card-icon {
+    font-size: 2rem;
+    width: 50px;
+    height: 50px;
+  }
+}
+
+@media (max-width: 480px) {
+  .chat-history.card-body {
+    padding: 1rem;
+    min-height: 300px;
+  }
+  
+  .chat-history.card-body .genai-heading {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .chat-history.card-body .suggestion-card {
+    min-width: 250px;
+    max-width: 280px;
+    padding: 1rem 0.75rem;
+  }
+  
+  .chat-history.card-body .suggestion-card .card-icon {
+    font-size: 1.75rem;
+    width: 45px;
+    height: 45px;
+    margin-bottom: 0.75rem;
+  }
+  
+  .chat-history.card-body .suggestion-card .card-text {
+    font-size: 0.9rem;
+  }
+}
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+  .chat-history.card-body {
+    background: #1a1a1a;
+    border-color: #2d2d2d;
+  }
+  
+  .chat-history.card-body::before {
+    background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+  }
+  
+  .chat-history.card-body .genai-heading {
+    color: #ffffff;
+  }
+  
+  .chat-history.card-body .suggestion-card {
+    background: #2d2d2d;
+    border-color: #404040;
+  }
+  
+  .chat-history.card-body .suggestion-card .card-icon {
+    background: linear-gradient(135deg, #2d2d2d, #404040);
+  }
+  
+  .chat-history.card-body .suggestion-card:hover .card-icon {
+    background: linear-gradient(135deg, #3d3d3d, #505050);
+  }
+  
+  .chat-history.card-body .suggestion-card .card-text {
+    color: #e5e7eb;
+  }
+  
+  .chat-history.card-body .suggestion-card:hover .card-text {
+    color: #ffffff;
+  }
+}
+
+/* Animation for cards appearing */
+@keyframes cardFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.chat-history.card-body .suggestion-card {
+  animation: cardFadeIn 0.6s ease-out forwards;
+}
+
+.chat-history.card-body .suggestion-card:nth-child(1) {
+  animation-delay: 0.1s;
+}
+
+.chat-history.card-body .suggestion-card:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.chat-history.card-body .suggestion-card:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+/* Focus states for accessibility */
+.chat-history.card-body .suggestion-card:focus {
+  outline: 2px solid #8b5cf6;
+  outline-offset: 2px;
+}
+
+/* Loading state */
+.chat-history.card-body.loading {
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+.chat-history.card-body.loading .suggestion-card {
+  animation: none;
+  opacity: 0.5;
+}
+
+/* Hover effects for touch devices */
+@media (hover: none) {
+  .chat-history.card-body .suggestion-card:hover {
+    transform: none;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+  }
+  
+  .chat-history.card-body .suggestion-card:hover .card-icon {
+    transform: none;
+  }
+  
+  .chat-history.card-body .suggestion-card:active {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  }
+}
+
+/* Input Group Styling - matches the image exactly */
+.input-group {
+  display: flex;
+  align-items: center;
+  background: #4b5563;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 16px;
+  transition: all 0.3s ease;
+  position: relative;
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  height: 56px;
+  gap: 12px;
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.input-group:focus-within {
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.25);
+}
+
+/* Blue paperclip icon */
+.input-group .paperclip-icon {
+  color: #3b82f6;
+  font-size: 1.4rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  position: relative;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  background: transparent;
+  border: none;
+  padding: 0;
+}
+
+.input-group .paperclip-icon:hover {
+  color: #2563eb;
+  transform: scale(1.05);
+}
+
+/* Text input area - white background like in image */
+.input-group .text-input {
+  flex: 1;
+  background: #ffffff;
+  border: none;
+  outline: none;
+  font-size: 1.1rem;
+  color: #374151;
+  padding: 8px 12px;
+  height: 36px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  min-width: 200px;
+}
+
+.input-group .text-input::placeholder {
+  color: #9ca3af;
+  font-weight: 400;
+}
+
+.input-group .text-input:focus {
+  background: #ffffff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  border: 1px solid #3b82f6;
+}
+
+.input-group input,
+.input-group textarea {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: #ffffff;
+  font-size: 1rem;
+  color: #374151;
+  padding: 4px 40px;
+  height: 36px;
+  resize: none;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  margin: 0;
+  line-height: 20px;
+  position: relative;
+  z-index: 1;
+  border-radius: 6px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  min-width: 200px;
+}
+
+.input-group input::placeholder,
+.input-group textarea::placeholder {
+  color: #9ca3af;
+  font-weight: 400;
+  transition: color 0.3s ease;
+}
+
+.input-group:focus-within input::placeholder,
+.input-group:focus-within textarea::placeholder {
+  color: #6b7280;
+}
+
+.input-group input:focus,
+.input-group textarea:focus {
+  background: #ffffff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+  border: 1px solid #3b82f6;
+}
+
+/* Blue paperclip icon */
+.input-group .paperclip-icon {
+  color: #3b82f6;
+  font-size: 1.3rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  position: relative;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  flex-shrink: 0;
+  margin-left: 8px;
+  animation: fadeInLeft 0.6s ease-out 0.2s both;
+}
+
+@keyframes fadeInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.input-group .paperclip-icon:hover {
+  color: #2563eb;
+  transform: scale(1.1) rotate(5deg);
+}
+
+.input-group .paperclip-icon:active {
+  transform: scale(0.95);
+}
+
+/* Attachment count badge */
+.input-group .attachment-count {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  background: #6b7280;
+  color: #ffffff;
+  font-size: 0.7rem;
+  font-weight: 600;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  animation: pulse 2s infinite;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+/* Blue send button */
+.input-group .send-button {
+  background: #3b82f6;
+  color: #ffffff;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  flex-shrink: 0;
+  min-width: 70px;
+  height: 36px;
+  box-shadow: 0 2px 6px rgba(59, 130, 246, 0.2);
+}
+
+@keyframes fadeInRight {
+  from {
+    opacity: 0;
+    transform: translateX(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.input-group .send-button:hover {
+  background: #2563eb;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+}
+
+.input-group .send-button:active {
+  transform: translateY(0);
+  background: #1d4ed8;
+}
+
+.input-group .send-button:focus {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+/* Responsive design for input-group */
+@media (max-width: 768px) {
+  .input-group {
+    max-width: 100%;
+    padding: 10px 14px;
+    height: 52px;
+    margin: 0 8px;
+    gap: 10px;
+  }
+  
+  .input-group .text-input {
+    font-size: 1rem;
+    padding: 6px 10px;
+    height: 28px;
+  }
+  
+  .input-group .send-button {
+    padding: 6px 14px;
+    font-size: 0.85rem;
+    min-width: 65px;
+    height: 32px;
+  }
+  
+  .input-group .paperclip-icon {
+    font-size: 1.2rem;
+    width: 24px;
+    height: 24px;
+  }
+}
+
+@media (max-width: 480px) {
+  .input-group {
+    padding: 8px 12px;
+    height: 48px;
+    margin: 0 5px;
+    gap: 8px;
+  }
+  
+  .input-group .text-input {
+    font-size: 0.95rem;
+    padding: 4px 8px;
+    height: 24px;
+  }
+  
+  .input-group .send-button {
+    padding: 4px 12px;
+    font-size: 0.8rem;
+    min-width: 60px;
+    height: 28px;
+  }
+  
+  .input-group .paperclip-icon {
+    font-size: 1.1rem;
+    width: 20px;
+    height: 20px;
+  }
+}
+
+/* Additional animations and effects */
+.input-group {
+  /* Smooth scrolling for better performance */
+  will-change: transform, box-shadow;
+  /* Prevent text selection on buttons */
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+}
+
+/* Loading state animation */
+.input-group.loading .send-button {
+  animation: loadingPulse 1.5s infinite;
+}
+
+@keyframes loadingPulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+/* Success state animation */
+.input-group.success .send-button {
+  animation: successBounce 0.6s ease-out;
+}
+
+@keyframes successBounce {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Error state animation */
+.input-group.error {
+  animation: errorShake 0.5s ease-in-out;
+}
+
+@keyframes errorShake {
+  0%, 100% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-5px);
+  }
+  75% {
+    transform: translateX(5px);
+  }
+}
+
+/* Focus ring for accessibility */
+.input-group:focus-within {
+  outline: none;
+}
+
+.input-group .send-button:focus,
+.input-group .paperclip-icon:focus {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+/* Touch device optimizations */
+@media (hover: none) and (pointer: coarse) {
+  .input-group .send-button:hover,
+  .input-group .paperclip-icon:hover {
+    transform: none;
+  }
+  
+  .input-group .send-button:active,
+  .input-group .paperclip-icon:active {
+    transform: scale(0.95);
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .input-group {
+    border: 2px solid #000000;
+  }
+  
+  .input-group .input-container {
+    border: 1px solid #000000;
+  }
+  
+  .input-group .send-button {
+    border: 2px solid #000000;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .input-group,
+  .input-group * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
