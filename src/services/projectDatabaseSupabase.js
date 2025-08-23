@@ -26,7 +26,27 @@ class ProjectDatabaseSupabase {
                 // Fallback to localStorage
                 return this.getLocalProjects();
             }
-            return data || [];
+            
+            // Always check localStorage as well to ensure we have all projects
+            const localProjects = this.getLocalProjects();
+            
+            // If Supabase returns data, merge with localStorage
+            if (data && data.length > 0) {
+                // Combine Supabase and localStorage data, removing duplicates
+                const allProjects = [...data];
+                localProjects.forEach(localProject => {
+                    const exists = allProjects.some(supabaseProject => 
+                        supabaseProject.id === localProject.id
+                    );
+                    if (!exists) {
+                        allProjects.push(localProject);
+                    }
+                });
+                return allProjects;
+            } else {
+                // If Supabase is empty, use localStorage
+                return localProjects;
+            }
         } catch (error) {
             console.error('Error in getAllProjects:', error);
             // Fallback to localStorage
@@ -89,20 +109,20 @@ class ProjectDatabaseSupabase {
                 custom_answers: projectData.customAnswers,
             };
 
+            // Always save to localStorage first as backup
+            const localResult = this.saveProjectLocal(projectData);
+
             const { data, error } = await databaseService.createProject(projectToSave);
             
             if (error) {
                 console.error('Error saving project to Supabase:', error);
-                // Fallback to localStorage
-                return this.saveProjectLocal(projectData);
+                // Return localStorage result as fallback
+                return localResult;
             }
-
-            // Also save to localStorage for offline access
-            this.saveProjectLocal(projectData);
 
             return {
                 success: true,
-                project: data[0],
+                project: data && data[0] ? data[0] : localResult.project,
                 message: 'Project saved successfully!'
             };
         } catch (error) {
