@@ -24,9 +24,6 @@ const Sidebar = () => {
     return (
         <>
         <div className="sidebar">
-            <div className="sidebar-header">
-               <p>Main Page</p>
-            </div>
             <ul>
                 <li>
                     <Link to="/dashboard" >
