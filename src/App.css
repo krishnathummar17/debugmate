@@ -34,7 +34,7 @@ body.dark header .myacc .userInfo{color: #fff;}
 body.dark header .myacc .userInfo{color: #fff;}
 body.dark .main .sidebarwrapper{background: #232946; box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.18);}
 body.dark .main .sidebarwrapper .sidebar ul li button{color: #fff;}
-body.dark .main .sidebarwrapper .sidebar .sidebar-header{color: #fff;}
+
 body.dark .main .sidebarwrapper .sidebar ul li button .icon svg{color: #fff;}
 body.dark .main .sidebarwrapper .sidebar ul li button .text{color: #fff;}
 body.dark .main .sidebarwrapper .sidebar ul li button .arrow svg{color: #fff;}
@@ -83,7 +83,7 @@ header button.rounded-circle svg{width: 30px; height: 30px; color: #000; transit
 );width: 280px; position: fixed; left:0; top:70px; height: 100vh; box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.08); transition: all 0.3s ease-in-out; z-index: 1001;}
 .main .sidebarwrapper.open{left: -280px;}
 .main .sidebarwrapper .sidebar{width: 100%;}
-.main .sidebarwrapper .sidebar .sidebar-header{width: 100%; height: 50px; display: flex; padding: 10px 25px; outline: none; font-size: 15px; font-weight: 500;margin-top: 10px;margin-bottom: 0px;opacity: 0.8;}
+
 
 .main .sidebarwrapper .sidebar ul{padding-left: 0px;margin-left: 8px;margin-bottom: 0px;}
 .main .sidebarwrapper .sidebar ul li{margin-bottom: 0px; list-style: none;}
