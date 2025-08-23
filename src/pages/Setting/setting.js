@@ -537,15 +537,6 @@ const Setting = () => {
             
             <div className="settings-layout">
                 <div className="settings-sidebar">
-                    <div className="sidebar-header">
-                        <button 
-                            className="menu-toggle"
-                            onClick={() => context.setIstoggleSidebar(!context.istoggleSidebar)}
-                        >
-                            <MdOutlineMenu />
-                        </button>
-                        <span>Settings Menu</span>
-                    </div>
                     
                     <div className="sidebar-menu">
                         {settingsSections.map((section) => (
