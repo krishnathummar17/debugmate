@@ -1,16 +1,23 @@
 import React, { useRef, useEffect, useState } from 'react';
-import { Card, Form, Button, InputGroup } from 'react-bootstrap';
+import { Card } from 'react-bootstrap';
 import { FaCode, FaPaperclip } from 'react-icons/fa';
 import './DualChatbot.css';
 
-const initialMockMessages = [
-  { from: 'bot', text: 'Upload your code file or ask a developer question.' },
-  { from: 'user', text: 'Can you review my code?' },
-  { from: 'bot', text: 'Sure! Please upload your file.' },
-];
+const getInitialMessages = (projectInfo) => {
+  if (projectInfo.projectId) {
+    return [
+      { from: 'bot', text: `Hello! I'm here to help you with your project "${projectInfo.projectName}". You can ask me questions about development, code review, or upload files for analysis.` },
+    ];
+  }
+  return [
+    { from: 'bot', text: 'Upload your code file or ask a developer question.' },
+    { from: 'user', text: 'Can you review my code?' },
+    { from: 'bot', text: 'Sure! Please upload your file.' },
+  ];
+};
 
-const DeveloperChat = () => {
-  const [messages, setMessages] = useState(initialMockMessages);
+const DeveloperChat = ({ projectInfo = {} }) => {
+  const [messages, setMessages] = useState(getInitialMessages(projectInfo));
   const [input, setInput] = useState('');
   const [chatHistory, setChatHistory] = useState(() => {
     const saved = localStorage.getItem('chatHistory_web_designing_prototyping');
@@ -25,8 +32,8 @@ const DeveloperChat = () => {
     return [
       {
         id: 1,
-        summary: initialMockMessages.find(m => m.from === 'user')?.text || '',
-        fullChat: initialMockMessages,
+        summary: getInitialMessages(projectInfo).find(m => m.from === 'user')?.text || '',
+        fullChat: getInitialMessages(projectInfo),
       },
     ];
   });
@@ -78,7 +85,7 @@ const DeveloperChat = () => {
   };
 
   const handleNewChat = () => {
-    setMessages(initialMockMessages);
+    setMessages(getInitialMessages(projectInfo));
     setSessionActive(false);
   };
 
@@ -105,6 +112,36 @@ const DeveloperChat = () => {
           <Card.Header className="d-flex align-items-center">
             <FaCode className="me-2" /> <span>Web Designing Prototyping</span>
           </Card.Header>
+          {projectInfo.projectId && (
+            <div className="project-info-banner" style={{
+              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+              color: 'white',
+              padding: '12px 20px',
+              fontSize: '14px',
+              borderBottom: '1px solid #e9ecef'
+            }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <div>
+                  <strong>Project:</strong> {projectInfo.projectName || 'Unknown Project'}
+                  {projectInfo.projectId && <span style={{ marginLeft: '10px', opacity: 0.8 }}>(ID: {projectInfo.projectId})</span>}
+                </div>
+                <button 
+                  onClick={() => window.history.back()}
+                  style={{
+                    background: 'rgba(255,255,255,0.2)',
+                    border: 'none',
+                    color: 'white',
+                    padding: '4px 8px',
+                    borderRadius: '4px',
+                    fontSize: '12px',
+                    cursor: 'pointer'
+                  }}
+                >
+                  Back to Project
+                </button>
+              </div>
+            </div>
+          )}
           <Card.Body className="chat-history">
             {messages.map((msg, idx) => (
               <div key={idx} className={`chat-bubble ${msg.from}`}>{msg.text}</div>
@@ -112,20 +149,23 @@ const DeveloperChat = () => {
             <div ref={chatEndRef} />
           </Card.Body>
           <Card.Footer>
-            <InputGroup>
-              <Form.Label htmlFor="file-upload" className="mb-0 file-upload-label">
-                <FaPaperclip />
-                <Form.Control type="file" id="file-upload" className="d-none" />
-              </Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Type your message..."
-                value={input}
-                onChange={e => setInput(e.target.value)}
-                onKeyDown={handleKeyDown}
-              />
-              <Button variant="primary" className="me-2" onClick={() => handleSend()}>Send</Button>
-            </InputGroup>
+            <div className="chatbot-input-area">
+              <div className="input-wrapper">
+                <button className="attach-btn">
+                  <FaPaperclip />
+                </button>
+                <input
+                  type="text"
+                  placeholder="Type your message..."
+                  value={input}
+                  onChange={e => setInput(e.target.value)}
+                  onKeyDown={handleKeyDown}
+                />
+                <button className="send-btn" onClick={() => handleSend()}>
+                  Send
+                </button>
+              </div>
+            </div>
           </Card.Footer>
         </Card>
       </div>
