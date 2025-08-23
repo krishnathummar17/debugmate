@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import logo from '../../pages/logo_transparent.png';
+import logo from '../../assets/images/logo.png';
 import { useContext } from 'react';
 import { MyContext } from '../../App';
 import { MdEmail } from "react-icons/md";
@@ -87,7 +87,7 @@ const SignIn = () => {
                     <div className='form-section'>
                         <form onSubmit={handleLogin} className='login-form'>
                             <div className='input-group'>
-                                <label htmlFor='email' className='input-label'>Email Address</label>
+                                <label htmlFor='email' className='input-label'>Email ID</label>
                                 <div className='input-container'>
                                     <span className='input-icon'><MdEmail /></span>
                                     <input 
