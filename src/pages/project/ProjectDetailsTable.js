@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import projectDatabaseSupabase from '../../services/projectDatabaseSupabase';
 import { Table, Button, Card, Row, Col, ToggleButtonGroup, ToggleButton, Spinner, Alert } from 'react-bootstrap';
+import { FiArrowUp } from 'react-icons/fi';
 import './projectDetailsTable.css'
 
 const ProjectDetailsTable = () => {
@@ -8,10 +10,37 @@ const ProjectDetailsTable = () => {
   const [view, setView] = useState('table');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [showScrollTop, setShowScrollTop] = useState(false);
 
   useEffect(() => {
     loadProjects();
   }, []);
+
+  // Handle scroll to top button visibility
+  useEffect(() => {
+    const handleScroll = () => {
+      const tableContainer = document.querySelector('.table_container');
+      if (tableContainer) {
+        setShowScrollTop(tableContainer.scrollTop > 300);
+      }
+    };
+
+    const tableContainer = document.querySelector('.table_container');
+    if (tableContainer) {
+      tableContainer.addEventListener('scroll', handleScroll);
+      return () => tableContainer.removeEventListener('scroll', handleScroll);
+    }
+  }, []);
+
+  const scrollToTop = () => {
+    const tableContainer = document.querySelector('.table_container');
+    if (tableContainer) {
+      tableContainer.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    }
+  };
 
   const loadProjects = async () => {
     try {
@@ -121,46 +150,106 @@ const ProjectDetailsTable = () => {
                 )}
               </tbody>
             </Table>
-          ) : (
-            <Row xs={1} md={2} lg={3} className="g-4">
-              {projects.length === 0 ? (
-                <Col><div className="text-center">No projects found.</div></Col>
-              ) : (
-                projects.map((proj, idx) => (
-                  <Col key={proj.id}>
-                    <Card className="mb-3">
-                      <Card.Body>
-                        <Card.Title>{proj.name || proj.projectName}</Card.Title>
-                        <Card.Subtitle className="mb-2 text-muted">{proj.status}</Card.Subtitle>
-                        <Card.Text>
-                          <strong>Description:</strong> {proj.description || proj.projectDescription}<br/>
-                          <strong>Start Date:</strong> {proj.start_date || proj.startDate}<br/>
-                          <strong>End Date:</strong> {proj.end_date || proj.endDate}<br/>
-                          <strong>Team Members:</strong> {(proj.assigned_to || proj.assignedTo || []).join(', ')}<br/>
-                          <strong>Client Name:</strong> {proj.client_name || proj.clientName}<br/>
-                          <strong>Tech Stack:</strong> {(proj.tech_stack || proj.techStack || []).join(', ')}<br/>
-                          <strong>Leader:</strong> {proj.leader_of_project || proj.leaderOfProject}<br/>
-                          <strong>Documents:</strong> {Array.isArray(proj.upload_documents || proj.uploadDocuments) && (proj.upload_documents || proj.uploadDocuments).length > 0 ? (
-                            (proj.upload_documents || proj.uploadDocuments).map((file, i) => (
-                              <div key={i}>
-                                <a href={file.data} download={file.name} style={{ color: '#007bff', textDecoration: 'underline' }}>
-                                  {file.name}
-                                </a>
-                              </div>
-                            ))
-                          ) : (
-                            <span style={{ color: '#888' }}>No files</span>
-                          )}
-                        </Card.Text>
-                        <Button variant="danger" size="sm" onClick={() => handleDelete(proj.id)}>Delete</Button>
-                      </Card.Body>
-                    </Card>
-                  </Col>
-                ))
-              )}
-            </Row>
-          )}
+                     ) : (
+             <div className="projects-container-custom">
+               {projects.length === 0 ? (
+                 <div className="text-center">No projects found.</div>
+               ) : (
+                 projects.map((proj, idx) => (
+                   <Card key={proj.id}>
+                     <Card.Body>
+                       <div className="d-flex justify-content-between align-items-start mb-3">
+                         <div className="flex-grow-1">
+                           <h5 className="project-title mb-1">{proj.name || proj.projectName}</h5>
+                           <p className="project-subtitle text-muted mb-2">
+                             {proj.description || proj.projectDescription ? 
+                               (proj.description || proj.projectDescription).substring(0, 80) + ((proj.description || proj.projectDescription).length > 80 ? '...' : '') 
+                               : 'No description available'
+                             }
+                           </p>
+                           {proj.client_name || proj.clientName && (
+                             <div className="d-flex align-items-center text-muted small mb-1">
+                               <span>Client: {proj.client_name || proj.clientName}</span>
+                             </div>
+                           )}
+                         </div>
+                       </div>
+
+                       <div className="mb-3">
+                         <div className="d-flex align-items-center text-muted small mb-2">
+                           <span>Status: {proj.status || 'Not Set'}</span>
+                         </div>
+                         
+                         <div className="d-flex align-items-center text-muted small mb-2">
+                           <span>Start: {proj.start_date || proj.startDate}</span>
+                         </div>
+                         
+                         <div className="d-flex align-items-center text-muted small mb-2">
+                           <span>End: {proj.end_date || proj.endDate}</span>
+                         </div>
+                         
+                         {(proj.assigned_to || proj.assignedTo || []).length > 0 && (
+                           <div className="d-flex align-items-center text-muted small mb-2">
+                             <span>Team: {(proj.assigned_to || proj.assignedTo || []).join(', ')}</span>
+                           </div>
+                         )}
+                         
+                         {proj.leader_of_project || proj.leaderOfProject && (
+                           <div className="d-flex align-items-center text-muted small mb-2">
+                             <span>Leader: {proj.leader_of_project || proj.leaderOfProject}</span>
+                           </div>
+                         )}
+                       </div>
+
+                       {(proj.tech_stack || proj.techStack || []).length > 0 && (
+                         <div className="mb-3">
+                           <small className="text-muted d-block mb-1">Tech Stack:</small>
+                           <div className="d-flex flex-wrap gap-1">
+                             {(proj.tech_stack || proj.techStack || []).slice(0, 3).map((tech, index) => (
+                               <span key={index} className="badge bg-light text-dark small">
+                                 {tech}
+                               </span>
+                             ))}
+                             {(proj.tech_stack || proj.techStack || []).length > 3 && (
+                               <span className="badge bg-light text-dark small">
+                                 +{(proj.tech_stack || proj.techStack || []).length - 3} more
+                               </span>
+                             )}
+                           </div>
+                         </div>
+                       )}
+
+                       <div className="d-flex justify-content-between align-items-center mt-auto">
+                         <Link 
+                           to={`/project/${proj.id}`} 
+                           className="btn btn-primary btn-sm"
+                         >
+                           View Details
+                         </Link>
+                         <Button variant="danger" size="sm" onClick={() => handleDelete(proj.id)}>
+                           Delete
+                         </Button>
+                       </div>
+                     </Card.Body>
+                   </Card>
+                 ))
+               )}
+             </div>
+           )}
         </>
+      )}
+      
+      {/* Scroll to top button */}
+      {showScrollTop && (
+        <Button
+          onClick={scrollToTop}
+          className="scroll-to-top-btn"
+          variant="primary"
+          size="sm"
+          title="Scroll to top"
+        >
+          <FiArrowUp />
+        </Button>
       )}
     </div>
   );
