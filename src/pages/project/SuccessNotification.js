@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import './successNotification.css';
 
 const SuccessNotification = ({ show, message, onClose }) => {
@@ -6,7 +7,7 @@ const SuccessNotification = ({ show, message, onClose }) => {
     if (show) {
       const timer = setTimeout(() => {
         onClose();
-      }, 2000);
+      }, 4000);
       return () => clearTimeout(timer);
     }
   }, [show, onClose]);
@@ -22,6 +23,11 @@ const SuccessNotification = ({ show, message, onClose }) => {
         </svg>
       </div>
       <div className="success-message">{message}</div>
+      <div className="success-actions">
+        <Link to="/dashboard" className="btn btn-primary btn-sm">
+          View Dashboard
+        </Link>
+      </div>
     </div>
   );
 };
